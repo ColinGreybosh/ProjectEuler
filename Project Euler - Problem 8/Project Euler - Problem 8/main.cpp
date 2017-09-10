@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 
 int charToInt(char c)
@@ -6,11 +8,11 @@ int charToInt(char c)
     return c - '0';
 }
 
-long long int getProduct(std::string string)
+long long int getProduct(std::string str)
 {
     long long int product = 1;
 
-    for (char& c : string)
+    for (char& c : str)
     {
         product *= charToInt(c);
     }
@@ -20,7 +22,8 @@ long long int getProduct(std::string string)
 
 int main(int argc, char* args[])
 {
-    long long int product = 0;
+    std::vector<long long int> productVector;
+
     const int NUM_OF_ADJ_DIGITS = 13;
     const std::string NUMBER_STRING = 
         "73167176531330624919225119674426574742355349194934"
@@ -44,10 +47,24 @@ int main(int argc, char* args[])
         "05886116467109405077541002256983155200055935729725"
         "71636269561882670428252483600823257530420752963450";
 
+    for (int subStrStart = 0; subStrStart < (NUMBER_STRING.length() - NUM_OF_ADJ_DIGITS - 1); subStrStart++)
+    {
+        std::string subStr = NUMBER_STRING.substr(subStrStart, NUM_OF_ADJ_DIGITS);
 
-    std::cout << product << std::endl;
+        if (subStr.find_first_of('0') != std::string::npos)
+        {
+            // Continue if a substring has 0 in it
+            continue;
+        }
+        else
+        {
+            productVector.push_back(getProduct(subStr));
+        }
+    }
+
+    std::sort(productVector.rbegin(), productVector.rend());
+    std::cout << productVector[0] << std::endl;
 
     getchar();
-
     return 0;
 }
